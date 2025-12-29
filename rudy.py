@@ -1,7 +1,10 @@
 import requests, socket
 from scapy.all import *
 from time import sleep
+import random
+import string
 import os
+import random
 
 attack_sites = ["127.0.0.1"]
 
@@ -13,16 +16,27 @@ def connect_to_site(dest_ip="0.0.0.0", port=443):
 
 def craft_packet(src_ip="0.0.0.0", data=""):
     reduced_data = list(data)
+
     for seg_data in reduced_data:
-        print("in for loop")
         print (seg_data)
-        packet = IP(dst=attack_sites[0], src=src_ip) / TCP() / seg_data 
+        packet = IP(dst=attack_sites[0], src=src_ip) / TCP() / seg_data
         sleep(1)
+
     return packet
-    
+
 def send_packet(src_ip="0.0.0.0", data="", dest_ip="0.0.0.0", port=443):
     socket_connection = connect_to_site(dest_ip, port)
+
     packet = craft_packet(src_ip, data=data)
+
     socket_connection.send(bytes(packet))
 
-send_packet(src_ip="127.0.0.1", data="test", dest_ip=attack_sites[0], port=80)
+def generate_bogus_data(length_of_data=1000):
+    data = ""
+
+    for _ in range(length_of_data):
+        data += (random.choice(string.ascii_lowercase))
+
+    return data
+
+#send_packet(src_ip="127.0.0.1", data=generate_bogus_data(), dest_ip=attack_sites[0], port=80)
